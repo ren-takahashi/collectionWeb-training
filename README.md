@@ -1,4 +1,4 @@
-# metal-collection-archive
+# animal-collection-archive
 
 要件定義、設計、実装を一貫して学習するための個人学習用リポジトリ。
 アニマルフィギュアシリーズという架空の商品のアーカイブサイトを作成。
@@ -39,7 +39,7 @@ npm install
 `.env` ファイルをリポジトリルートに作成し、以下の内容を記載します。
 
 ```
-DATABASE_URL="postgresql://postgres:postgres@localhost:5432/metal_collection"
+DATABASE_URL="postgresql://postgres:postgres@localhost:5433/animal_figure_series"
 ```
 
 > `.env` は `.gitignore` で除外されているため、クローン後に手動で作成が必要です。

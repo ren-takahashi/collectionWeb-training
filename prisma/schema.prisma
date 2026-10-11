@@ -23,8 +23,8 @@ datasource db {
 //   フィールド名  型  属性
 // }
 //
-// モデル名は PascalCase（例: ReleasePokemon）で書きます。
-// → Prisma が自動的に snake_case のテーブル名（release_pokemon）に変換します。
+// モデル名は PascalCase（例: ReleaseAnimal）で書きます。
+// → Prisma が自動的に snake_case のテーブル名（release_animal）に変換します。
 // → テーブル名を明示したい場合は @@map("テーブル名") を使います。
 //
 // =============================================================================
@@ -58,14 +58,14 @@ datasource db {
 // ■ リレーション（テーブル同士の関連）
 // =============================================================================
 //
-// 【1対多の例】 1つの release に複数の release_pokemon が紐づく場合
+// 【1対多の例】 1つの release に複数の release_animal が紐づく場合
 //
 //   model Release {
 //     id              Int              @id @default(autoincrement())
-//     release_pokemons ReleasePokemon[] // ← 複数なので配列（[]）
+//     release_animals ReleaseAnimal[] // ← 複数なので配列（[]）
 //   }
 //
-//   model ReleasePokemon {
+//   model ReleaseAnimal {
 //     id         Int     @id @default(autoincrement())
 //     release_id Int
 //     release    Release @relation(fields: [release_id], references: [id])
@@ -74,7 +74,7 @@ datasource db {
 //
 // 【ポイント】
 //   - 親側（Release）には子の配列フィールドを書く（DBカラムにはならない、Prismaの論理定義）
-//   - 子側（ReleasePokemon）には外部キーカラム（release_id）と @relation を書く
+//   - 子側（ReleaseAnimal）には外部キーカラム（release_id）と @relation を書く
 //
 // =============================================================================
 // ■ モデルレベルの属性（モデル全体への設定）
@@ -195,7 +195,7 @@ model Animal {
 
   release_animals ReleaseAnimal[]
 
-  @@map("pokemon")
+  @@map("animal")
 }
 
 // -----------------------------------------------------------------------------
@@ -229,7 +229,7 @@ model Animal {
 model ReleaseAnimal {
   id                      Int      @id @default(autoincrement())
   release_id              Int
-  animal_id               Int      @map("pokemon_id")
+  animal_id               Int      @map("animal_id")
   display_order           Int?
   item_type               String?  // "figure" | "medal" | null
   reprint_from_release_id Int?
@@ -243,7 +243,7 @@ model ReleaseAnimal {
   @@unique([release_id, animal_id])
   @@index([release_id])
   @@index([animal_id])
-  @@map("release_pokemon")
+  @@map("release_animal")
 }
 
 // -----------------------------------------------------------------------------
