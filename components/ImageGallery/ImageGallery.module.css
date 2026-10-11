@@ -1,0 +1,90 @@
+.gallery {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+/* メイン画像エリア */
+.mainImageWrap {
+  border-top: var(--frame-border-top);
+  border-left: var(--frame-border-left);
+  border-right: var(--frame-border-right);
+  border-bottom: var(--frame-border-bottom);
+  box-shadow: var(--frame-shadow);
+  display: inline-flex;
+  line-height: 0; /* img の下の隙間を消す */
+}
+
+.mainImage {
+  display: block;
+  width: 100%;
+  max-width: 400px;
+  height: auto;
+  object-fit: cover;
+}
+
+/* サムネイル一覧 */
+.thumbnails {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.thumbButton {
+  padding: 0;
+  background: none;
+  border: 2px solid transparent;
+  cursor: pointer;
+  line-height: 0;
+  transition: border-color 0.1s;
+}
+
+.thumbButton:hover {
+  border-color: var(--color-link);
+}
+
+.thumbActive {
+  border-color: var(--color-accent);
+}
+
+.thumbImage {
+  display: block;
+  width: 80px;
+  height: 60px;
+  object-fit: cover;
+}
+
+/* NO IMAGE */
+.noImage {
+  display: flex;
+  width: 95%;
+  height: 150px;
+  margin: 0 auto 20px;
+  justify-content: center;
+  align-items: center;
+
+  border-top:    var(--frame-border-top);
+  border-left:   var(--frame-border-left);
+  border-right:  var(--frame-border-right);
+  border-bottom: var(--frame-border-bottom);
+  box-shadow: var(--frame-shadow);
+  background-color: rgba(15, 15, 15, 0.7);
+}
+
+.noImageImg {
+  display: block;
+  max-width: 700px;
+  width: 100%;
+  height: auto;
+}
+
+.noImageText {
+  color: var(--color-border);
+  color: #0060d1;
+  font-size: 25px;
+  font-weight: bold;
+  letter-spacing: 0.1em;
+  font-family: monospace;
+}

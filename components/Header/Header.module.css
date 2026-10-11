@@ -1,0 +1,29 @@
+.header {
+  top: 0;
+  width: 100%;
+  max-width: var(--site-width);
+  margin: 30px auto 0;
+  border-top:    var(--frame-border-top);
+  border-left:   var(--frame-border-left);
+  border-right:  var(--frame-border-right);
+  border-bottom: var(--frame-border-bottom);
+  box-shadow: var(--frame-shadow);
+  background-color: var(--color-surface);
+}
+
+.inner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px 16px;
+}
+
+.siteTitle {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--color-accent);
+  letter-spacing: 0.1em;
+  margin: 0;
+  text-align: center;
+}
+

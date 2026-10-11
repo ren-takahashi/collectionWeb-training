@@ -1,0 +1,38 @@
+.breadcrumb {
+  margin-bottom: 16px;
+  padding: 0 2px 4px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.list {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+  font-size: 14px;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.separator {
+  color: var(--color-text);
+}
+
+.link {
+  color: var(--color-link);
+  text-decoration: underline;
+}
+
+.link:hover {
+  color: var(--color-accent);
+}
+
+/* 現在地（リンクなし） */
+.current {
+  color: var(--color-text);
+  font-weight: bold;
+}

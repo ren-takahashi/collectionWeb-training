@@ -1,0 +1,134 @@
+.nav {
+  width: var(--nav-width); 
+  flex-shrink: 0;
+  padding: 12px 0;
+  position: relative;
+  z-index: 1;
+  border-top:    var(--frame-border-top);
+  border-left:   var(--frame-border-left);
+  border-right:  var(--frame-border-right);
+  border-bottom: var(--frame-border-bottom);
+  box-shadow: var(--frame-shadow);
+  background-color: var(--color-surface);
+}
+
+/* スマホ幅でのみ表示するアコーディオントリガー */
+.accordionTrigger {
+  display: none;
+}
+
+.arrow {
+  display: inline-block;
+  transition: transform 0.3s ease;
+}
+
+.arrowOpen {
+  transform: rotate(180deg);
+}
+
+.heading {
+  padding: 4px 12px 8px;
+  font-size: 14px;
+  color: var(--color-text);
+  letter-spacing: 0.12em;
+  border-bottom: 1px solid var(--color-border);
+  margin-bottom: 4px;
+}
+
+.listItem {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 12px;
+}
+
+/* 現在地でないアイテム */
+.bulletIdle {
+  flex-shrink: 0;
+  color: var(--color-border);
+  font-size: 16px;
+  line-height: 1;
+}
+
+/* 現在地のアイテム */
+.bulletActive {
+  flex-shrink: 0;
+  color: var(--color-accent);
+  font-size: 16px;
+  line-height: 1;
+}
+
+.list {
+  padding: 4px 0;
+}
+
+.link {
+  display: block;
+  padding: 6px 0;
+  color: var(--color-text);
+  text-decoration: none;
+  font-size: 13px;
+}
+
+.link:hover {
+  color: var(--color-accent);
+  /* background-color: #1a1a1a; */
+}
+
+/* 現在のページのリンク */
+.active {
+  color: var(--color-accent);
+  /* background-color: #111111; */
+}
+
+/* ========== スマホ対応（768px以下） ========== */
+@media (max-width: 768px) {
+  .nav {
+    width: 100%;
+    padding: 0;
+    margin: 8px 0;
+  }
+
+  /* トリガーボタンをスマホで表示 */
+  .accordionTrigger {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    width: 100%;
+    padding: 8px 12px;
+    background: transparent;
+    border: none;
+    color: var(--color-accent);
+    font-size: 14px;
+    letter-spacing: 0.12em;
+    cursor: pointer;
+    text-decoration: underline;
+  }
+
+  /* ▼ を右端に固定し、テキストだけ中央に */
+  .arrow {
+    position: absolute;
+    right: 12px;
+  }
+
+  /* PC用の ★MENU★ 見出しをスマホでは非表示 */
+  .heading {
+    display: none;
+  }
+
+  /* リストはデフォルト閉じ（max-height: 0 でアニメーション） */
+  .list {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+    padding: 0;
+    border-top: none;
+  }
+
+  /* isOpen 時に展開 */
+  .list.open {
+    max-height: 300px;
+    border-top: 1px solid var(--color-border);
+  }
+}

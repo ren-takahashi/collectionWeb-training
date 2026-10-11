@@ -1,0 +1,300 @@
+// =============================================================================
+// Prisma Schema テンプレート（学習用コメント付き）
+// =============================================================================
+// このファイルでデータベースのテーブル構造を定義します。
+// モデルを書いたら `npx prisma migrate dev --name <名前>` でDBに反映します。
+// =============================================================================
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../app/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  // 接続URLは prisma.config.ts の datasource.url で管理
+  // PrismaClient への接続は seed.ts / lib/prisma.ts で PrismaPg アダプターを使用
+}
+
+// =============================================================================
+// ■ モデルの基本構文
+// =============================================================================
+// model モデル名 {
+//   フィールド名  型  属性
+// }
+//
+// モデル名は PascalCase（例: ReleasePokemon）で書きます。
+// → Prisma が自動的に snake_case のテーブル名（release_pokemon）に変換します。
+// → テーブル名を明示したい場合は @@map("テーブル名") を使います。
+//
+// =============================================================================
+// ■ 主な型一覧
+// =============================================================================
+//
+//   String    → VARCHAR / TEXT（文字列）
+//   Int       → INTEGER（整数）
+//   Float     → DOUBLE PRECISION（小数）
+//   Boolean   → BOOLEAN（true / false）
+//   DateTime  → TIMESTAMP（日時）
+//   Json      → JSONB（JSONデータ）
+//
+//   型の末尾に ? をつけると NULL 許容になります（例: String?）
+//
+// =============================================================================
+// ■ 主な属性（フィールドへの修飾）
+// =============================================================================
+//
+//   @id               → 主キー
+//   @default(...)     → デフォルト値。以下の関数が使えます：
+//                         autoincrement()  整数の自動採番
+//                         uuid()           UUID の自動生成
+//                         now()            現在日時
+//                         cuid()           衝突しにくいID生成
+//   @unique           → ユニーク制約（値の重複不可）
+//   @updatedAt        → レコード更新時に自動で現在日時をセット
+//   @map("カラム名")  → DBの実際のカラム名を指定（フィールド名と異なる場合）
+//
+// =============================================================================
+// ■ リレーション（テーブル同士の関連）
+// =============================================================================
+//
+// 【1対多の例】 1つの release に複数の release_pokemon が紐づく場合
+//
+//   model Release {
+//     id              Int              @id @default(autoincrement())
+//     release_pokemons ReleasePokemon[] // ← 複数なので配列（[]）
+//   }
+//
+//   model ReleasePokemon {
+//     id         Int     @id @default(autoincrement())
+//     release_id Int
+//     release    Release @relation(fields: [release_id], references: [id])
+//     //                  ↑ release_id を外部キーとして Release の id に紐づける
+//   }
+//
+// 【ポイント】
+//   - 親側（Release）には子の配列フィールドを書く（DBカラムにはならない、Prismaの論理定義）
+//   - 子側（ReleasePokemon）には外部キーカラム（release_id）と @relation を書く
+//
+// =============================================================================
+// ■ モデルレベルの属性（モデル全体への設定）
+// =============================================================================
+//
+//   @@map("テーブル名")           → DBのテーブル名を指定
+//   @@unique([フィールド, ...])   → 複数フィールドの組み合わせでユニーク制約
+//   @@index([フィールド, ...])    → インデックスを作成（検索を速くする）
+//
+// =============================================================================
+// ■ 記述例（サンプル）
+// =============================================================================
+
+// model SampleModel {
+//   id         Int      @id @default(autoincrement()) // 主キー（自動採番）
+//   name       String                                 // NOT NULL の文字列
+//   note       String?                                // NULL 許容の文字列
+//   count      Int      @default(0)                   // デフォルト値あり整数
+//   is_active  Boolean  @default(true)                // Boolean
+//   created_at DateTime @default(now())               // レコード作成日時（自動）
+//   updated_at DateTime @updatedAt                    // レコード更新日時（自動）
+//
+//   @@map("sample_model") // DBのテーブル名
+// }
+
+// =============================================================================
+// ここからテーブル定義を記載
+// =============================================================================
+
+// -----------------------------------------------------------------------------
+// テーブル名  : series
+// 説明        : シリーズマスタ。商品タイトルをまとめるシリーズ区分を管理する。
+// -----------------------------------------------------------------------------
+// カラム
+//   id          : 主キー（自動採番）
+//   name        : シリーズ名（ユニーク制約あり）
+//   sort_order  : 一覧表示時のソート順
+//   description : シリーズの簡単な紹介文（NULL許容）
+//   created_at  : レコード作成日時（自動）
+//   updated_at  : レコード更新日時（自動）
+// -----------------------------------------------------------------------------
+// リレーション
+//   releases : Release との1対多（1つのシリーズに複数の商品タイトルが紐づく）
+// -----------------------------------------------------------------------------
+model Series {
+  id          Int      @id @default(autoincrement())
+  name        String   @unique
+  sort_order  Int
+  description String?
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+
+  releases Release[]
+
+  @@map("series")
+}
+
+// -----------------------------------------------------------------------------
+// テーブル名  : release
+// 説明        : 商品タイトルマスタ。各商品タイトルの情報を管理する。
+// -----------------------------------------------------------------------------
+// カラム
+//   id                : 主キー（自動採番）
+//   series_id         : 外部キー → series.id
+//   number_in_series  : シリーズ内の番号（例: シリーズ内1番目）
+//   name              : 商品タイトル名（例: アニマルフィギュアシリーズ Vol.3）
+//   release_year      : 発売年（不明の場合NULL）
+//   description       : 商品説明・補足（再録情報など。不明・不要の場合NULL）
+//   created_at        : レコード作成日時（自動）
+//   updated_at        : レコード更新日時（自動）
+// -----------------------------------------------------------------------------
+// リレーション
+//   series           : series_id を外部キーとして Series の id に紐づく（多対1）
+//   release_animals : ReleaseAnimal との1対多（1タイトルに複数のアニマルが紐づく）
+// -----------------------------------------------------------------------------
+// 制約
+//   @@unique([series_id, number_in_series]) : シリーズ内で番号が重複しない
+// -----------------------------------------------------------------------------
+model Release {
+  id               Int      @id @default(autoincrement())
+  series_id        Int
+  number_in_series Int
+  name             String
+  release_year     Int?
+  description      String?
+  created_at       DateTime @default(now())
+  updated_at       DateTime @updatedAt
+
+  series           Series           @relation(fields: [series_id], references: [id])
+  release_animals  ReleaseAnimal[] @relation("ReleaseAnimalToRelease")
+  reprint_sources  ReleaseAnimal[] @relation("ReprintFromRelease")
+  release_images   ReleaseImage[]
+
+  @@unique([series_id, number_in_series])
+  @@map("release")
+}
+
+// -----------------------------------------------------------------------------
+// テーブル名  : animal
+// 説明        : アニマルマスタ。アニマル自体の情報を管理する。
+//               同じアニマルが複数タイトルに登場しても、このテーブルには1件だけ持つ。
+// -----------------------------------------------------------------------------
+// カラム
+//   id         : 主キー（自動採番）
+//   name       : アニマル名（ユニーク制約あり）
+//   created_at : レコード作成日時（自動）
+//   updated_at : レコード更新日時（自動）
+// -----------------------------------------------------------------------------
+// リレーション
+//   release_animals : ReleaseAnimal との1対多（1匹のアニマルが複数タイトルに紐づく）
+// -----------------------------------------------------------------------------
+model Animal {
+  id           Int      @id @default(autoincrement())
+  name         String   @unique
+  species_name String?  // 正式名。name と異なる場合のみ設定
+  created_at   DateTime @default(now())
+  updated_at   DateTime @updatedAt
+
+  release_animals ReleaseAnimal[]
+
+  @@map("pokemon")
+}
+
+// -----------------------------------------------------------------------------
+// テーブル名  : release_animal
+// 説明        : Release と Animal の中間テーブル。
+//               「どのタイトルにどのアニマルが収録されているか」を表す。
+//               将来的に収録固有の情報（表示順・備考など）を持たせることを想定。
+// -----------------------------------------------------------------------------
+// カラム
+//   id                    : 主キー（自動採番）
+//   release_id            : 外部キー → release.id
+//   animal_id             : 外部キー → animal.id
+//   display_order         : 一覧表示時の並び順（不明な場合はNULL）
+//   item_type             : 収録アイテムの種別（"figure" / "medal" / NULL）。初代シリーズは区別なし（NULL）
+//   reprint_from_release_id : 再録元タイトルのID（外部キー → release.id）。NULLなら新規収録
+//   created_at            : レコード作成日時（自動）
+//   updated_at            : レコード更新日時（自動）
+// -----------------------------------------------------------------------------
+// リレーション
+//   release             : release_id を外部キーとして Release の id に紐づく（多対1）
+//   animal              : animal_id を外部キーとして Animal の id に紐づく（多対1）
+//   reprint_from_release: reprint_from_release_id を外部キーとして Release の id に紐づく（多対1・NULL許容）
+// -----------------------------------------------------------------------------
+// 制約
+//   @@unique([release_id, animal_id]) : 同じタイトルに同じアニマルが重複登録されない
+// -----------------------------------------------------------------------------
+// インデックス
+//  @@index([release_id]) : release_id にインデックスを作成（タイトルごとのアニマル検索を速くする）
+//  @@index([animal_id])  : animal_id にインデックスを作成（アニマルごとのタイトル検索を速くする）
+// -----------------------------------------------------------------------------
+model ReleaseAnimal {
+  id                      Int      @id @default(autoincrement())
+  release_id              Int
+  animal_id               Int      @map("pokemon_id")
+  display_order           Int?
+  item_type               String?  // "figure" | "medal" | null
+  reprint_from_release_id Int?
+  created_at              DateTime @default(now())
+  updated_at              DateTime @updatedAt
+
+  release              Release  @relation("ReleaseAnimalToRelease", fields: [release_id], references: [id])
+  animal               Animal   @relation(fields: [animal_id], references: [id])
+  reprint_from_release Release? @relation("ReprintFromRelease", fields: [reprint_from_release_id], references: [id])
+
+  @@unique([release_id, animal_id])
+  @@index([release_id])
+  @@index([animal_id])
+  @@map("release_pokemon")
+}
+
+// -----------------------------------------------------------------------------
+// テーブル名  : release_image
+// 説明        : 商品タイトルに紐づく画像を管理するテーブル。
+//               1タイトルに対して複数枚の画像を持てる。
+// -----------------------------------------------------------------------------
+// カラム
+//   id            : 主キー（自動採番）
+//   release_id    : 外部キー → release.id
+//   image_path    : 画像パス（例: /images/releases/4/001.jpg）
+//   display_order : 表示順
+//   alt_text      : 代替テキスト（NULL許容）
+//   created_at    : レコード作成日時（自動）
+//   updated_at    : レコード更新日時（自動）
+// -----------------------------------------------------------------------------
+// リレーション
+//   release : release_id を外部キーとして Release の id に紐づく（多対1）
+// -----------------------------------------------------------------------------
+model ReleaseImage {
+  id            Int      @id @default(autoincrement())
+  release_id    Int
+  image_path    String
+  display_order Int
+  alt_text      String?
+  created_at    DateTime @default(now())
+  updated_at    DateTime @updatedAt
+
+  release Release @relation(fields: [release_id], references: [id])
+
+  @@index([release_id])
+  @@map("release_image")
+}
+
+// -----------------------------------------------------------------------------
+// テーブル名  : search_log
+// 説明        : 検索クエリのログ。ユーザーが何を検索しているかを把握し、
+//               ブログ記事のネタ探しやDBの収録データ漏れ発見に活用する。
+//               個人を特定する情報（IPアドレス等）は一切保持しない。
+// -----------------------------------------------------------------------------
+// カラム
+//   id          : 主キー（自動採番）
+//   query       : 検索ワード
+//   hit_count   : 検索結果の件数（0件 = ユーザーが求めている情報が不足している可能性）
+//   searched_at : 検索日時（自動設定）
+// -----------------------------------------------------------------------------
+model SearchLog {
+  id          Int      @id @default(autoincrement())
+  query       String
+  hit_count   Int
+  searched_at DateTime @default(now())
+
+  @@map("search_log")
+}

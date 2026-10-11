@@ -1,0 +1,82 @@
+/* 画面全体を覆う固定レイヤー（コンテンツより背面に表示） */
+.container {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+/*
+  静的な星：アニメーションなしの白いドット
+*/
+.star {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  background-color: #a3cbfc;
+}
+
+/*
+  グリント星：静的な星の位置にスポーンし、1回だけアニメーションして削除される
+  animationend イベントで JS が remove() する
+*/
+.starGlint {
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  background: #a3cbfc;
+  box-shadow:
+    /* 縦：上方向（中心から離れるほど薄く） */
+    0 -2px 0 0 rgba(160, 210, 255, 0.9),
+    0 -4px 0 0 rgba(130, 190, 255, 0.5),
+    0 -6px 0 0 rgba(100, 170, 255, 0.2),
+    /* 縦：下方向 */
+    0  2px 0 0 rgba(160, 210, 255, 0.9),
+    0  4px 0 0 rgba(130, 190, 255, 0.5),
+    0  6px 0 0 rgba(100, 170, 255, 0.2),
+    /* 横：左方向 */
+    -2px 0 0 0 rgba(160, 210, 255, 0.9),
+    -4px 0 0 0 rgba(130, 190, 255, 0.5),
+    -6px 0 0 0 rgba(100, 170, 255, 0.2),
+    /* 横：右方向 */
+     2px 0 0 0 rgba(160, 210, 255, 0.9),
+     4px 0 0 0 rgba(130, 190, 255, 0.5),
+     6px 0 0 0 rgba(100, 170, 255, 0.2);
+
+  /* ループする点滅アニメーション。duration/delay は JS でランダムに上書きされる */
+  animation: twinkle 3s ease-in-out infinite;
+  transform-origin: center;
+}
+
+/*
+  グリント点滅アニメーション（ループ）
+  - 0%   : 背景になじむ暗い色（opacity極小）
+  - 25%  : 青みのある白（本来の色）
+  - 50%  : 白みのある青（最明期）
+  - 75%  : 青みのある白（本来の色）
+  - 100% : 背景になじむ暗い色（opacity極小）
+  filter: brightness() で色を明るく/暗くする
+*/
+@keyframes twinkle {
+  0% {
+    opacity: 0.9;
+    filter: brightness(0.4);
+  }
+  25% {
+    opacity: 1;
+    filter: brightness(1);
+  }
+  50% {
+    opacity: 1;
+    filter: brightness(2);
+  }
+  75% {
+    opacity: 1;
+    filter: brightness(1);
+  }
+  100% {
+    opacity: 0.9;
+    filter: brightness(0.4);
+  }
+}

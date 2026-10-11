@@ -1,0 +1,69 @@
+.container {
+  padding: 0 0 30px 0;
+}
+
+.queryInfo {
+  font-size: 13px;
+  color: var(--color-text);
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  table-layout: fixed;
+}
+
+.th {
+  text-align: left;
+  padding: 6px 10px;
+  color: var(--color-accent);
+  border-bottom: 1px solid var(--color-border);
+  font-weight: bold;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+}
+
+/* PC幅でアニマル名列を固定幅に */
+.colAnimal {
+  width: 28%;
+}
+
+.colRelease {
+  width: 72%;
+}
+
+.tr:hover {
+  background-color: rgba(255, 255, 255, 0.03);
+}
+
+.td {
+  padding: 5px 10px;
+  border-bottom: 1px solid var(--color-border);
+  vertical-align: middle;
+}
+
+.link {
+  color: var(--color-link);
+  text-decoration: none;
+}
+
+.link:hover {
+  text-decoration: underline;
+  color: var(--color-accent);
+}
+
+.noResult {
+  font-size: 13px;
+  color: var(--color-text);
+  padding: 12px 0;
+}
+
+.itemTypeBadge {
+  font-size: 11px;
+  color: var(--color-text-muted);
+  margin-left: 2px;
+}
